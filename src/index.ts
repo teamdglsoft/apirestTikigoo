@@ -1,9 +1,10 @@
 import Server from './server/server';
 import router from './router/router';
 import bodyParser from 'body-parser';
+require('./server/config')
 
 
-const server = Server.init(3000);
+const server = Server.init(process.env.PORT ? +process.env.PORT : 3000);
 server.app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

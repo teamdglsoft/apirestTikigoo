@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server/server"));
 const router_1 = __importDefault(require("./router/router"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const server = server_1.default.init(3000);
+require('./server/config');
+const server = server_1.default.init(process.env.PORT ? +process.env.PORT : 3000);
 server.app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
