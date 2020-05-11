@@ -4,12 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "npm install && node dist/index",
+        "start": "node dist/index",
         "test": "echo \"Error: no test specified\" && exit 1",
         "htmlCop": "copyfiles --up 1 src/public/*html dist"
     },
     "engines": {
-        "node": "10.x"
+        "node": "10.16.3"
     },
     "author": "Daniel Galeana López",
     "license": "ISC",
