@@ -36,7 +36,7 @@ router.post('/addProductToOrder', (req, res) => {
         else {
             return res.json({
                 ok: true,
-                msj: 'El producto se ha asociado al pedido correctamente :D'
+                msj: 'El producto se ha asociado al pedido correctamente!'
             });
         }
     });
