@@ -9,6 +9,9 @@
         "htmlCop": "copyfiles --up 1 src/public/*html dist",
         "build": "tsc && npm run htmlCop"
     },
+    "engines": {
+        "node": "12.16.3"
+    },
     "author": "Daniel Galeana López",
     "license": "ISC",
     "dependencies": {
