@@ -351,7 +351,7 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
     const scapedIdDispositivo = MySqlClass.instance.cnn.escape(idDispositivo);
     const query = `
     select * from equipo
-    where identificadorCel = ${scapedIdDispositivo}
+    where identificadorCel = '${scapedIdDispositivo}'
     `;
     const queryUser = ``
     MySqlClass.ejecutarQuery(query, (err: any, resultado: any) => {
