@@ -116,6 +116,7 @@ router.post('/registerUserInfo', (req, res) => {
                     });
                 }
                 else {
+                    console.log('True:::: ', resultadoU);
                     return res.json({
                         ok: true,
                         msj: 'Usuario agregado correctamente, estado en equipo actualizado correctamente'
