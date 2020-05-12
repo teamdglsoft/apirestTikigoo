@@ -314,22 +314,26 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
                 edo: 0
             });
         } else {
-            const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
-            MySqlClass.ejecutarQuery(queryUser, (errU: any, resultadoU: any) => {
-                if(err) {
-                    res.status(202).json({
-                        ok: true,
-                        error: err,
-                        edo: 0
-                    });
-                } else {
-                    res.json({
-                        ok: true,
-                        edo: resultado[0].edo,
-                        idUsuario: resultadoU[0].ncliente
-                    });
-                }
+            res.json({
+                ok: true,
+                edo: resultado[0].edo
             });
+            // const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
+            // MySqlClass.ejecutarQuery(queryUser, (errU: any, resultadoU: any) => {
+            //     if(err) {
+            //         res.status(202).json({
+            //             ok: true,
+            //             error: err,
+            //             edo: 0
+            //         });
+            //     } else {
+            //         res.json({
+            //             ok: true,
+            //             edo: resultado[0].edo,
+            //             idUsuario: resultadoU[0].ncliente
+            //         });
+            //     }
+            // });
             
         }
 

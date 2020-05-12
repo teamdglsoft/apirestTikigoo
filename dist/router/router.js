@@ -299,9 +299,8 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
     const scapedIdDispositivo = mysql_1.default.instance.cnn.escape(idDispositivo);
     const query = `
     select * from equipo
-    where identificadorCel = "${scapedIdDispositivo}"
+    where identificadorCel = '${scapedIdDispositivo}'
     `;
-    // const queryUser = ``
     mysql_1.default.ejecutarQuery(query, (err, resultado) => {
         if (err) {
             res.status(202).json({
@@ -311,23 +310,26 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
             });
         }
         else {
-            const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
-            mysql_1.default.ejecutarQuery(queryUser, (errU, resultadoU) => {
-                if (err) {
-                    res.status(202).json({
-                        ok: true,
-                        error: err,
-                        edo: 0
-                    });
-                }
-                else {
-                    res.json({
-                        ok: true,
-                        edo: resultado[0].edo,
-                        idUsuario: resultadoU[0].ncliente
-                    });
-                }
+            res.json({
+                ok: true,
+                edo: resultado[0].edo
             });
+            // const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
+            // MySqlClass.ejecutarQuery(queryUser, (errU: any, resultadoU: any) => {
+            //     if(err) {
+            //         res.status(202).json({
+            //             ok: true,
+            //             error: err,
+            //             edo: 0
+            //         });
+            //     } else {
+            //         res.json({
+            //             ok: true,
+            //             edo: resultado[0].edo,
+            //             idUsuario: resultadoU[0].ncliente
+            //         });
+            //     }
+            // });
         }
     });
 });
