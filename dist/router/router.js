@@ -299,7 +299,7 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
     const scapedIdDispositivo = mysql_1.default.instance.cnn.escape(idDispositivo);
     const query = `
     select * from equipo
-    where identificadorCel = '${scapedIdDispositivo}'
+    where identificadorCel = ${scapedIdDispositivo}
     `;
     mysql_1.default.ejecutarQuery(query, (err, resultado) => {
         if (err) {
@@ -319,7 +319,7 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
             //     if(err) {
             //         res.status(202).json({
             //             ok: true,
-            //             error: err,
+            //             error: err, :D
             //             edo: 0
             //         });
             //     } else {
