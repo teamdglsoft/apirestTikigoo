@@ -131,9 +131,9 @@ router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req, res) => {
     const codeSms = req.params.codeSms;
     const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
     const scapedCodeSms = mysql_1.default.instance.cnn.escape(codeSms);
-    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = '${scapedDeviceId}' AND codigo = '${scapedCodeSms}'`;
+    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${scapedDeviceId} AND codigo = ${scapedCodeSms}`;
     const queryUpdateDeviceId = `
-    UPDATE equipo  SET edo = 2 WHERE identificadorCel = '${scapedDeviceId}' AND codigo = '${scapedCodeSms}';
+    UPDATE equipo  SET edo = 2 WHERE identificadorCel = ${scapedDeviceId} AND codigo = ${scapedCodeSms};
     `;
     mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
         if (err) {
