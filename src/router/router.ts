@@ -173,6 +173,7 @@ router.post('/addDeviceId/:deviceId', (req: Request, res: Response) => {
 });
 //validar codigo de verificación y actualizar estado
 router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req: Request, res: Response) => {
+    console.log('req: ', req);
     const deviceId = req.params.deviceId;
     const codeSms = req.params.codeSms;
     const scapedDeviceId = MySqlClass.instance.cnn.escape(deviceId);
