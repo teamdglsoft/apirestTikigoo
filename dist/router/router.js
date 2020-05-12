@@ -124,64 +124,16 @@ router.post('/registerUserInfo', (req, res) => {
         }
     });
 });
-//enviar sms con codigo
-router.post('/addDeviceId/:deviceId', (req, res) => {
-    const deviceId = req.params.deviceId;
-    const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
-    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${scapedDeviceId}`;
-    const queryInsertNewDeviceId = `
-    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${scapedDeviceId}, ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, 1);
-    `;
-    const queryUpdateCodeInDeviceId = `
-    UPDATE equipo set codigo = ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
-    `;
-    mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
-        if (err) {
-            if (err === 'El registro solicitado no existe') {
-                console.log(err);
-                mysql_1.default.ejecutarQuery(queryInsertNewDeviceId, (errD, resultadoD) => {
-                    if (errD) {
-                        return res.status(400).json({
-                            ok: false,
-                            error: err
-                        });
-                    }
-                    else {
-                        return res.json({
-                            ok: true,
-                            msj: 'Registro creado correctamente'
-                        });
-                    }
-                });
-            }
-        }
-        else {
-            mysql_1.default.ejecutarQuery(queryUpdateCodeInDeviceId, (errU, resultadoU) => {
-                if (errU) {
-                    return res.status(400).json({
-                        ok: false,
-                        error: err
-                    });
-                }
-                else {
-                    return res.json({
-                        ok: true,
-                        msj: 'Registro actualizado correctamente'
-                    });
-                }
-            });
-        }
-    });
-});
 //validar codigo de verificación y actualizar estado
 router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req, res) => {
+    console.log('req: ', req);
     const deviceId = req.params.deviceId;
     const codeSms = req.params.codeSms;
     const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
     const scapedCodeSms = mysql_1.default.instance.cnn.escape(codeSms);
-    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${scapedDeviceId} AND codigo = ${scapedCodeSms}`;
+    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = '${scapedDeviceId}' AND codigo = '${scapedCodeSms}'`;
     const queryUpdateDeviceId = `
-    UPDATE equipo  SET edo = 2 WHERE identificadorCel = ${scapedDeviceId} AND codigo = ${scapedCodeSms};
+    UPDATE equipo  SET edo = 2 WHERE identificadorCel = '${scapedDeviceId}' AND codigo = '${scapedCodeSms}';
     `;
     mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
         if (err) {
@@ -347,9 +299,9 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
     const scapedIdDispositivo = mysql_1.default.instance.cnn.escape(idDispositivo);
     const query = `
     select * from equipo
-    where identificadorCel = ${scapedIdDispositivo}
+    where identificadorCel = "${scapedIdDispositivo}"
     `;
-    const queryUser = ``;
+    // const queryUser = ``
     mysql_1.default.ejecutarQuery(query, (err, resultado) => {
         if (err) {
             res.status(202).json({
@@ -359,7 +311,7 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
             });
         }
         else {
-            const queryUser = `SELECT * FROM cliente WHERE nEquipo = ${resultado[0].identificadorCel}`;
+            const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
             mysql_1.default.ejecutarQuery(queryUser, (errU, resultadoU) => {
                 if (err) {
                     res.status(202).json({
@@ -379,7 +331,53 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
         }
     });
 });
-router.post('/newDevice', (req, res) => {
-    //identificadorCel, codigo, edo
+//enviar sms con codigo
+router.post('/addDeviceId/:deviceId', (req, res) => {
+    const deviceId = req.params.deviceId;
+    const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
+    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${scapedDeviceId}`;
+    const queryInsertNewDeviceId = `
+    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${scapedDeviceId}, ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, 1);
+    `;
+    const queryUpdateCodeInDeviceId = `
+    UPDATE equipo set codigo = ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
+    `;
+    mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
+        if (err) {
+            if (err === 'El registro solicitado no existe') {
+                console.log(err);
+                mysql_1.default.ejecutarQuery(queryInsertNewDeviceId, (errD, resultadoD) => {
+                    if (errD) {
+                        return res.status(400).json({
+                            ok: false,
+                            error: err
+                        });
+                    }
+                    else {
+                        return res.json({
+                            ok: true,
+                            msj: 'Registro creado correctamente'
+                        });
+                    }
+                });
+            }
+        }
+        else {
+            mysql_1.default.ejecutarQuery(queryUpdateCodeInDeviceId, (errU, resultadoU) => {
+                if (errU) {
+                    return res.status(400).json({
+                        ok: false,
+                        error: err
+                    });
+                }
+                else {
+                    return res.json({
+                        ok: true,
+                        msj: 'Registro actualizado correctamente'
+                    });
+                }
+            });
+        }
+    });
 });
 exports.default = router;
