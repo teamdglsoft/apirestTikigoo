@@ -177,7 +177,7 @@ router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req: Request, res: Re
     const codeSms = req.params.codeSms;
     const scapedDeviceId = MySqlClass.instance.cnn.escape(deviceId);
     const scapedCodeSms = MySqlClass.instance.cnn.escape(codeSms);
-    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${ scapedDeviceId } AND codigo = ${scapedCodeSms}`;
+    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = '${ scapedDeviceId }' AND codigo = '${scapedCodeSms}'`;
     const queryUpdateDeviceId = `
     UPDATE equipo  SET edo = 2 WHERE identificadorCel = ${ scapedDeviceId } AND codigo = ${ scapedCodeSms};
     `;
