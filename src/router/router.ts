@@ -124,53 +124,6 @@ router.post('/registerUserInfo', (req: Request, res: Response) => {
 });
 
 
-//enviar sms con codigo
-router.post('/addDeviceId/:deviceId', (req: Request, res: Response) => {
-    const deviceId = req.params.deviceId;
-    const scapedDeviceId = MySqlClass.instance.cnn.escape(deviceId);
-    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${ scapedDeviceId }`;
-    const queryInsertNewDeviceId = `
-    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${ scapedDeviceId }, ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4)) }, 1);
-    `;
-    const queryUpdateCodeInDeviceId = `
-    UPDATE equipo set codigo = ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
-    `;
-    MySqlClass.ejecutarQuery(queryIfExistDevideId, (err: any, resultado: any) => {
-        if(err) {
-            if(err === 'El registro solicitado no existe') {
-                console.log(err);
-                MySqlClass.ejecutarQuery(queryInsertNewDeviceId, (errD: any, resultadoD: any) => {
-                    if(errD) {
-                        return res.status(400).json({
-                        ok: false,
-                        error: err
-                    });
-                } else {
-                    return res.json({
-                        ok: true,
-                        msj: 'Registro creado correctamente'
-                    });
-                }
-            });
-            }
-        } else {
-            MySqlClass.ejecutarQuery(queryUpdateCodeInDeviceId, (errU: any, resultadoU: any) => {
-                if(errU) {
-                    return res.status(400).json({
-                    ok: false,
-                    error: err
-                });
-            } else {
-                return res.json({
-                    ok: true,
-                    msj: 'Registro actualizado correctamente'
-                });
-            }
-        });
-        }
-
-    });
-});
 //validar codigo de verificación y actualizar estado
 router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req: Request, res: Response) => {
     console.log('req: ', req);
@@ -353,7 +306,7 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
     select * from equipo
     where identificadorCel = "${scapedIdDispositivo}"
     `;
-    const queryUser = ``
+    // const queryUser = ``
     MySqlClass.ejecutarQuery(query, (err: any, resultado: any) => {
         if(err) {
             res.status(202).json({
@@ -362,7 +315,7 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
                 edo: 0
             });
         } else {
-            const queryUser = `SELECT * FROM cliente WHERE nEquipo = ${resultado[0].identificadorCel}`
+            const queryUser = `SELECT * FROM cliente WHERE nEquipo = '${resultado[0].identificadorCel}'`;
             MySqlClass.ejecutarQuery(queryUser, (errU: any, resultadoU: any) => {
                 if(err) {
                     res.status(202).json({
@@ -384,8 +337,52 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
     });
 });
 
-router.post('/newDevice', (req: Request, res: Response) => {
-    //identificadorCel, codigo, edo
+//enviar sms con codigo
+router.post('/addDeviceId/:deviceId', (req: Request, res: Response) => {
+    const deviceId = req.params.deviceId;
+    const scapedDeviceId = MySqlClass.instance.cnn.escape(deviceId);
+    const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${ scapedDeviceId }`;
+    const queryInsertNewDeviceId = `
+    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${ scapedDeviceId }, ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4)) }, 1);
+    `;
+    const queryUpdateCodeInDeviceId = `
+    UPDATE equipo set codigo = ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
+    `;
+    MySqlClass.ejecutarQuery(queryIfExistDevideId, (err: any, resultado: any) => {
+        if(err) {
+            if(err === 'El registro solicitado no existe') {
+                console.log(err);
+                MySqlClass.ejecutarQuery(queryInsertNewDeviceId, (errD: any, resultadoD: any) => {
+                    if(errD) {
+                        return res.status(400).json({
+                        ok: false,
+                        error: err
+                    });
+                } else {
+                    return res.json({
+                        ok: true,
+                        msj: 'Registro creado correctamente'
+                    });
+                }
+            });
+            }
+        } else {
+            MySqlClass.ejecutarQuery(queryUpdateCodeInDeviceId, (errU: any, resultadoU: any) => {
+                if(errU) {
+                    return res.status(400).json({
+                    ok: false,
+                    error: err
+                });
+            } else {
+                return res.json({
+                    ok: true,
+                    msj: 'Registro actualizado correctamente'
+                });
+            }
+        });
+        }
+
+    });
 });
 
 export default router;
