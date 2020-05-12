@@ -323,7 +323,7 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
             //     if(err) {
             //         res.status(202).json({
             //             ok: true,
-            //             error: err,
+            //             error: err, :D
             //             edo: 0
             //         });
             //     } else {
