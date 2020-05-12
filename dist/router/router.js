@@ -126,7 +126,7 @@ router.post('/registerUserInfo', (req, res) => {
 });
 //validar codigo de verificación y actualizar estado
 router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req, res) => {
-    console.log('req: ', req);
+    console.log('req: ', req.params);
     const deviceId = req.params.deviceId;
     const codeSms = req.params.codeSms;
     const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
@@ -291,9 +291,6 @@ router.get('/getImagen/:id', (req, res) => {
         }
     });
 });
-// 0 no registrado
-// 1 en espera de que ingrese su codigo de verificacion
-// 2 registrado exitosamente
 router.get('/getDevice/:idDispositivo', (req, res) => {
     const idDispositivo = req.params.idDispositivo;
     const scapedIdDispositivo = mysql_1.default.instance.cnn.escape(idDispositivo);
