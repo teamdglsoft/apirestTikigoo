@@ -137,6 +137,7 @@ router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req, res) => {
     `;
     mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
         if (err) {
+            console.log('Sucedio un error: ', err);
             if (err === 'El registro solicitado no existe') {
                 return res.json({
                     ok: false,
@@ -146,15 +147,16 @@ router.post('/validateCodeToDeviceId/:deviceId/:codeSms', (req, res) => {
             }
         }
         else {
-            console.log(err);
             mysql_1.default.ejecutarQuery(queryUpdateDeviceId, (errD, resultadoD) => {
                 if (errD) {
+                    console.log('Error en consulta aninada: ', err);
                     return res.status(400).json({
                         ok: false,
                         error: err
                     });
                 }
                 else {
+                    console.log('todo sin errores');
                     return res.json({
                         ok: true,
                         msj: 'Estado actualizado correctamente',
