@@ -107,6 +107,7 @@ router.post('/registerUserInfo', (req: Request, res: Response) => {
         } else {
             MySqlClass.ejecutarQuery(queryUpdateStateEquipo, (errU: any, resultadoU: any) => {
                 if(err) {
+                    console.log('error: ', errU);
                     return res.status(400).json({
                     ok: false,
                     error: err
