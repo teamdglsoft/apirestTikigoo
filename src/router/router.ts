@@ -360,7 +360,7 @@ router.post('/addDeviceId/:deviceId/:celular', (req: Request, res: Response) => 
     const queryUpdateCodeInDeviceId = `
     UPDATE equipo set codigo = ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
     `;
-    
+    let mensaje = `Bienvenido a El Filon, su codigo de verificacion es: ${codeToSms}`
     MySqlClass.ejecutarQuery(queryIfExistDevideId, (err: any, resultado: any) => {
         if(err) {
             if(err === 'El registro solicitado no existe') {
@@ -373,10 +373,13 @@ router.post('/addDeviceId/:deviceId/:celular', (req: Request, res: Response) => 
                     });
                 } else {
                     console.log('se enviara el sms');
-                    let mensaje = `Bienvenido a El Filon, su codigo de verificación es: ${codeToSms}`
                     nexmo.message.sendSms('El Filon', `+52${celular}`, mensaje, (errNexmo: any, responseData: any) => {
                         if(errNexmo) {
                             console.log('error nexmo: ', errNexmo);
+                            return res.status(400).json({
+                                ok: false,
+                                error: errNexmo
+                            });
                         }
                             console.log('responseData: ', responseData);
                             return res.json({
@@ -396,9 +399,20 @@ router.post('/addDeviceId/:deviceId/:celular', (req: Request, res: Response) => 
                     error: err
                 });
             } else {
-                return res.json({
-                    ok: true,
-                    msj: 'Registro actualizado correctamente'
+                nexmo.message.sendSms('El Filon', `+52${celular}`, mensaje, (errNexmo: any, responseData: any) => {
+                    if(errNexmo) {
+                        console.log('error nexmo: ', errNexmo);
+                        return res.status(400).json({
+                            ok: false,
+                            error: errNexmo
+                        });
+                    }
+                        console.log('responseData: ', responseData);
+                        return res.json({
+                            ok: true,
+                            msj: 'Registro actualizado correctamente',
+                            responseData
+                        });     
                 });
             }
         });
