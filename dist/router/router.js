@@ -7,7 +7,12 @@ const express_1 = require("express");
 const mysql_1 = __importDefault(require("../mysql/mysql"));
 const moment = require('moment');
 const utilidades = require('../utilidades/funciones');
+const Nexmo = require('nexmo');
 const router = express_1.Router();
+const nexmo = new Nexmo({
+    apiKey: '1e2b52ea',
+    apiSecret: 'ckwwCX8cApFOeKUX'
+});
 //Registrar productos
 router.post('/addProductToOrder', (req, res) => {
     var date = new Date();
@@ -335,12 +340,14 @@ router.get('/getDevice/:idDispositivo', (req, res) => {
     });
 });
 //enviar sms con codigo
-router.post('/addDeviceId/:deviceId', (req, res) => {
+router.post('/addDeviceId/:deviceId/:celular', (req, res) => {
     const deviceId = req.params.deviceId;
+    const celular = req.params.celular;
     const scapedDeviceId = mysql_1.default.instance.cnn.escape(deviceId);
+    const codeToSms = utilidades.codeToSMS(4);
     const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${scapedDeviceId}`;
     const queryInsertNewDeviceId = `
-    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${scapedDeviceId}, ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, 1);
+    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${scapedDeviceId}, ${mysql_1.default.instance.cnn.escape(codeToSms)}, 1);
     `;
     const queryUpdateCodeInDeviceId = `
     UPDATE equipo set codigo = ${mysql_1.default.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
@@ -357,9 +364,17 @@ router.post('/addDeviceId/:deviceId', (req, res) => {
                         });
                     }
                     else {
-                        return res.json({
-                            ok: true,
-                            msj: 'Registro creado correctamente'
+                        let mensaje = `Bienvenido a El Filon, su codigo de verificación es: ${codeToSms}`;
+                        nexmo.message.sendSms('El Filon', celular, (errNexmo, responseData) => {
+                            if (errNexmo) {
+                            }
+                            else {
+                                return res.json({
+                                    ok: true,
+                                    msj: 'Registro creado correctamente',
+                                    responseData
+                                });
+                            }
                         });
                     }
                 });

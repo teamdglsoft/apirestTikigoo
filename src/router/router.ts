@@ -2,7 +2,12 @@ import { Router, Request, Response, request } from "express";
 import MySqlClass from '../mysql/mysql';
 const moment = require('moment');
 const utilidades = require('../utilidades/funciones');
+const Nexmo = require('nexmo')
 const router = Router();
+const nexmo = new Nexmo({
+    apiKey: '1e2b52ea',
+    apiSecret: 'ckwwCX8cApFOeKUX'
+  });
 
 //Registrar productos
 router.post('/addProductToOrder', (req: Request, res: Response) => {
@@ -343,16 +348,19 @@ router.get('/getDevice/:idDispositivo', (req: Request, res: Response) => {
 });
 
 //enviar sms con codigo
-router.post('/addDeviceId/:deviceId', (req: Request, res: Response) => {
+router.post('/addDeviceId/:deviceId/:celular', (req: Request, res: Response) => {
     const deviceId = req.params.deviceId;
+    const celular = req.params.celular;
     const scapedDeviceId = MySqlClass.instance.cnn.escape(deviceId);
+    const codeToSms = utilidades.codeToSMS(4);
     const queryIfExistDevideId = `SELECT * FROM equipo WHERE identificadorCel = ${ scapedDeviceId }`;
     const queryInsertNewDeviceId = `
-    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${ scapedDeviceId }, ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4)) }, 1);
+    INSERT INTO equipo (identificadorCel, codigo, edo) VALUES (${ scapedDeviceId }, ${ MySqlClass.instance.cnn.escape(codeToSms) }, 1);
     `;
     const queryUpdateCodeInDeviceId = `
     UPDATE equipo set codigo = ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
     `;
+    
     MySqlClass.ejecutarQuery(queryIfExistDevideId, (err: any, resultado: any) => {
         if(err) {
             if(err === 'El registro solicitado no existe') {
@@ -364,9 +372,16 @@ router.post('/addDeviceId/:deviceId', (req: Request, res: Response) => {
                         error: err
                     });
                 } else {
-                    return res.json({
-                        ok: true,
-                        msj: 'Registro creado correctamente'
+                    let mensaje = `Bienvenido a El Filon, su codigo de verificación es: ${codeToSms}`
+                    nexmo.message.sendSms('El Filon', celular, (errNexmo: any, responseData: any) => {
+                        if(errNexmo) {
+                        } else {
+                            return res.json({
+                                ok: true,
+                                msj: 'Registro creado correctamente',
+                                responseData
+                            });     
+                        }
                     });
                 }
             });
