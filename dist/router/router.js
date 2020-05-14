@@ -367,8 +367,10 @@ router.post('/addDeviceId/:deviceId/:celular', (req, res) => {
                         let mensaje = `Bienvenido a El Filon, su codigo de verificación es: ${codeToSms}`;
                         nexmo.message.sendSms('El Filon', celular, (errNexmo, responseData) => {
                             if (errNexmo) {
+                                console.log('error nexmo: ', errNexmo);
                             }
                             else {
+                                console.log('responseData: ', responseData);
                                 return res.json({
                                     ok: true,
                                     msj: 'Registro creado correctamente',
