@@ -366,7 +366,7 @@ router.post('/addDeviceId/:deviceId/:celular', (req, res) => {
                     else {
                         console.log('se enviara el sms');
                         let mensaje = `Bienvenido a El Filon, su codigo de verificación es: ${codeToSms}`;
-                        nexmo.message.sendSms('El Filon', `+52${celular}`, (errNexmo, responseData) => {
+                        nexmo.message.sendSms('El Filon', `+52${celular}`, mensaje, (errNexmo, responseData) => {
                             if (errNexmo) {
                                 console.log('error nexmo: ', errNexmo);
                             }
