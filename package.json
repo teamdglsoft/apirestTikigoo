@@ -9,7 +9,7 @@
         "htmlCop": "copyfiles --up 1 src/public/*html dist"
     },
     "engines": {
-        "node": "10.16.3"
+        "node": "12.16.3"
     },
     "author": "Daniel Galeana López",
     "license": "ISC",
