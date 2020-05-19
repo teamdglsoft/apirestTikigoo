@@ -352,6 +352,7 @@ router.post('/addDeviceId/:deviceId/:celular', (req, res) => {
     let mensaje = `Bienvenido a El Filon, su codigo de verificacion es: ${codeToSms}`;
     mysql_1.default.ejecutarQuery(queryIfExistDevideId, (err, resultado) => {
         console.log('if error: ', err);
+        console.log('Resultado:', resultado);
         if (err) {
             if (err === 'El registro solicitado no existe') {
                 console.log(err);
