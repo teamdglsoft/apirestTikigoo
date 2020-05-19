@@ -353,7 +353,7 @@ router.post('/addDeviceId/:deviceId/:celular', (req: Request, res: Response) => 
     `;
     const queryUpdateCodeInDeviceId = `
     UPDATE equipo set codigo = ${ MySqlClass.instance.cnn.escape(utilidades.codeToSMS(4))}, edo = 1
-    `;
+     WHERE identificadorCel = ${scapedDeviceId}`;
     let mensaje = `Bienvenido a El Filon, su codigo de verificacion es: ${codeToSms}`
     MySqlClass.ejecutarQuery(queryIfExistDevideId, (err: any, resultado: any) => {
         console.log('if error: ', err)
